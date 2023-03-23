@@ -17,9 +17,7 @@ public class ShazamKitModule: Module, ResultHandler {
             session.delegate = delegate
             configureAudioEngine()
         }
-        
-        Events("onChange")
-        
+                
         AsyncFunction("startListening") { (promise: Promise) in
             if pendingPromise != nil {
                 promise.reject(SearchInProgressException())
@@ -38,12 +36,6 @@ public class ShazamKitModule: Module, ResultHandler {
         Function("stopListening") {
             stopListening()
             pendingPromise = nil
-        }
-        
-        Function("pause") {
-            if audioEngine.isRunning {
-                audioEngine.pause()
-            }
         }
     }
     
@@ -104,7 +96,7 @@ public class ShazamKitModule: Module, ResultHandler {
                 appleMusicURL: item.appleMusicURL?.absoluteString,
                 artworkURL: item.artworkURL?.absoluteString,
                 genres: item.genres,
-                webURL: item.webURL,
+                webURL: item.webURL?.absoluteString,
                 subtitle: item.subtitle,
                 videoURL: item.videoURL?.absoluteString,
                 explicitContent: item.explicitContent,
@@ -125,25 +117,3 @@ public class ShazamKitModule: Module, ResultHandler {
         pendingPromise = nil
     }
 }
-
-class ShazamDelegate: NSObject, SHSessionDelegate {
-    private let resultHandler: ResultHandler
-    
-    init(resultHandler: ResultHandler) {
-        self.resultHandler = resultHandler
-    }
-    
-    func session(_ session: SHSession, didFind match: SHMatch) {
-        resultHandler.didFind(match: match)
-    }
-    
-    func session(_ session: SHSession, didNotFindMatchFor signature: SHSignature, error: Error?) {
-        resultHandler.didNotFind(match: signature)
-    }
-}
-
-protocol ResultHandler {
-    func didFind(match: SHMatch)
-    func didNotFind(match: SHSignature)
-}
-

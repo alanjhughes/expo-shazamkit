@@ -16,7 +16,7 @@ internal struct MatchedItem: Record {
     @Field
     var genres: [String] = []
     @Field
-    var webURL: URL? = nil
+    var webURL: String? = nil
     @Field
     var subtitle: String? = nil
     @Field
