@@ -6,6 +6,7 @@
   "types": "build/index.d.ts",
   "scripts": {
     "build": "expo-module build",
+    "build:plugin": "expo-module build plugin",
     "clean": "expo-module clean",
     "lint": "expo-module lint",
     "test": "expo-module test",
@@ -18,8 +19,9 @@
   "keywords": [
     "react-native",
     "expo",
-    "expo-shazamkit",
-    "ShazamKitModule"
+    "ShazamKit",
+    "shazam",
+    "music"
   ],
   "repository": "https://github.com/alanjhughes/expo-shazamkit",
   "bugs": {
