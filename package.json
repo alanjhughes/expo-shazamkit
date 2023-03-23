@@ -39,5 +39,6 @@
     "expo": "*",
     "react": "*",
     "react-native": "*"
-  }
+  },
+  "prettier": {}
 }
