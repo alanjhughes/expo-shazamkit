@@ -1,8 +1,11 @@
+import * as Linking from "expo-linking";
 import * as ExpoShazamKit from "expo-shazamkit";
 import { MatchedItem } from "expo-shazamkit/ShazamKitModule.types";
+import { MotiView } from "moti";
 import { useState } from "react";
 import {
   ActivityIndicator,
+  Button,
   Image,
   Pressable,
   StyleSheet,
@@ -23,16 +26,71 @@ export default function App() {
       const result = await ExpoShazamKit.startListening();
       setSearching(false);
       if (result.length > 0) {
-        console.log(result[0]);
         setSong(result[0]);
       }
-    } catch (e) {
-      console.log(e);
+    } catch {
+      setSearching(false);
     }
   };
 
   return (
     <View style={styles.container}>
+      <View style={{ flex: 1, justifyContent: "center", gap: 10 }}>
+        {song && (
+          <MotiView
+            from={{ opacity: 0, scale: 0 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{
+              type: "timing",
+              duration: 500,
+              scale: { type: "spring" },
+            }}
+            style={styles.item}
+          >
+            <Image
+              source={{ uri: song.artworkURL }}
+              style={{
+                width: 150,
+                height: 150,
+                borderRadius: 10,
+                borderWidth: 1,
+                borderColor: "rgba(0, 0, 0, 0.4)",
+              }}
+            />
+            <View style={{ alignItems: "center", gap: 10 }}>
+              <Text style={{ fontSize: 22, fontWeight: "bold" }}>
+                {song.title}
+              </Text>
+              <Text
+                style={{ fontSize: 18, textAlign: "center", fontWeight: "600" }}
+              >
+                {song.artist}
+              </Text>
+
+              <View style={{ flexDirection: "row" }}>
+                <Button
+                  title="Apple Music"
+                  onPress={() => Linking.openURL(song.appleMusicURL)}
+                />
+                <Button
+                  title="Shazam"
+                  onPress={() => Linking.openURL(song.webURL ?? "")}
+                />
+              </View>
+            </View>
+          </MotiView>
+        )}
+      </View>
+
+      {searching && (
+        <View style={{ alignItems: "center", marginVertical: 20, gap: 10 }}>
+          <ActivityIndicator color="white" size="large" />
+          <Text style={{ color: "white", fontWeight: "bold" }}>
+            Listening...
+          </Text>
+        </View>
+      )}
+
       <View style={{ gap: 20 }}>
         <Pressable
           style={{
@@ -42,22 +100,21 @@ export default function App() {
         >
           {({ pressed }) => (
             <View
-              style={{
-                alignItems: "center",
-                backgroundColor: !searching ? "white" : "lightgray",
-                padding: 10,
-                borderRadius: 10,
-                width: 200,
-                opacity: pressed ? 0.5 : 1,
-              }}
+              style={[
+                styles.btn,
+                {
+                  backgroundColor: !searching ? "white" : "lightgray",
+                  opacity: pressed ? 0.5 : 1,
+                },
+              ]}
             >
               <Text
-                style={{
-                  textAlign: "center",
-                  color: "rgb(74, 111, 250)",
-                  fontSize: 18,
-                  fontWeight: "bold",
-                }}
+                style={[
+                  styles.btnText,
+                  {
+                    color: "rgb(74, 111, 250)",
+                  },
+                ]}
               >
                 Tap to Shazam
               </Text>
@@ -79,22 +136,21 @@ export default function App() {
         >
           {({ pressed }) => (
             <View
-              style={{
-                alignItems: "center",
-                backgroundColor: !searching ? "lightgray" : "red",
-                padding: 10,
-                borderRadius: 10,
-                width: 200,
-                opacity: pressed ? 0.5 : 1,
-              }}
+              style={[
+                styles.btn,
+                {
+                  backgroundColor: !searching ? "lightgray" : "red",
+                  opacity: pressed ? 0.5 : 1,
+                },
+              ]}
             >
               <Text
-                style={{
-                  textAlign: "center",
-                  color: "white",
-                  fontSize: 18,
-                  fontWeight: "bold",
-                }}
+                style={[
+                  styles.btnText,
+                  {
+                    color: "white",
+                  },
+                ]}
               >
                 Stop
               </Text>
@@ -102,34 +158,6 @@ export default function App() {
           )}
         </Pressable>
       </View>
-
-      {searching && (
-        <View style={{ alignItems: "center", marginVertical: 20 }}>
-          <ActivityIndicator color="white" size="large" />
-          <Text style={{ color: "white" }}>Listening...</Text>
-        </View>
-      )}
-
-      {song && (
-        <View style={styles.row}>
-          <Image
-            source={{ uri: song.artworkURL }}
-            style={{
-              width: 150,
-              height: 150,
-              borderRadius: 10,
-              borderWidth: 1,
-              borderColor: "rgba(0, 0, 0, 0.4)",
-            }}
-          />
-          <View style={{ alignItems: "center" }}>
-            <Text style={{ fontSize: 22, fontWeight: "bold" }}>
-              {song.title}
-            </Text>
-            <Text style={{ fontSize: 18 }}>{song.artist}</Text>
-          </View>
-        </View>
-      )}
     </View>
   );
 }
@@ -138,9 +166,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "rgb(74, 111, 250)",
-    paddingTop: 50,
+    paddingBottom: 50,
   },
-  row: {
+  item: {
     alignItems: "center",
     backgroundColor: "white",
     margin: 20,
@@ -150,5 +178,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "black",
   },
-  startBtn: {},
+  btn: {
+    padding: 10,
+    borderRadius: 10,
+    width: 200,
+  },
+  btnText: {
+    textAlign: "center",
+    fontSize: 18,
+    fontWeight: "bold",
+  },
 });

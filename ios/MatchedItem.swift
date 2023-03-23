@@ -26,17 +26,3 @@ internal struct MatchedItem: Record {
     @Field
     var matchOffset: Double = 0.0
 }
-
-
-//"title": item.title ?? "",
-//"artist": item.artist ?? "",
-//"shazamID": item.shazamID ?? "",
-//"appleMusicID": item.appleMusicID ?? "",
-//"appleMusicURL": item.appleMusicURL ?? "",
-//"genres": item.genres,
-//"webURL": item.webURL ?? "",
-//"subtitle": item.subtitle ?? "",
-//"artworkURL": item.artworkURL?.absoluteString ?? "",
-//"videoURL": item.videoURL ?? "",
-//"explicitContent": item.explicitContent,
-//"matchOffset": Double(item.matchOffset.description) ?? 0.0,
