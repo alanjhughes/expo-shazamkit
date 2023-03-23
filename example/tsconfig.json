@@ -1,0 +1,10 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "strict": true,
+    "paths": {
+      "expo-shazamkit": ["../src/index"],
+      "expo-shazamkit/*": ["../src/*"]
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "platforms": ["ios", "android", "web"],
+  "ios": {
+    "modules": ["ShazamKitModule"]
+  },
+  "android": {
+    "modules": ["expo.community.modules.shazamkit.ShazamKitModule"]
+  }
+}
