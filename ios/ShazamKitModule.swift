@@ -7,6 +7,7 @@ public class ShazamKitModule: Module, ResultHandler {
 
   private let audioEngine = AVAudioEngine()
   private let mixerNode = AVAudioMixerNode()
+  
   private var pendingPromise: Promise?
 
   private var latestResults = [SHMediaItem]()
@@ -96,8 +97,10 @@ public class ShazamKitModule: Module, ResultHandler {
   func didFind(match: SHMatch) {
     guard let promise = pendingPromise else {
       log.error("lost promise")
+      stopListening()
       return
     }
+    
     stopListening()
 
     let items = match.mediaItems.map { item in

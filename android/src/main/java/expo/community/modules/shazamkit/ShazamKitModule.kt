@@ -1,18 +1,22 @@
 package expo.community.modules.shazamkit
 
 import android.Manifest
+import android.content.pm.PackageManager
 import android.media.AudioFormat
 import android.media.AudioRecord
 import android.media.MediaRecorder
 import android.util.Log
 import androidx.annotation.RequiresPermission
 import androidx.annotation.WorkerThread
-import com.shazam.shazamkit.Catalog
+import androidx.core.app.ActivityCompat
+import com.shazam.shazamkit.*
 import expo.modules.kotlin.Promise
 import expo.modules.kotlin.exception.Exceptions
+import expo.modules.kotlin.functions.Coroutine
 import expo.modules.kotlin.modules.Module
 import expo.modules.kotlin.modules.ModuleDefinition
 import java.nio.ByteBuffer
+import java.util.*
 
 class ShazamKitModule : Module() {
     private val context
@@ -21,8 +25,54 @@ class ShazamKitModule : Module() {
     override fun definition() = ModuleDefinition {
         Name("ExpoShazamKit")
 
-        AsyncFunction("startListening") { promise: Promise ->
-            Log.d("Shazam", "Start Listening")
+        AsyncFunction("startListening") Coroutine { promise: Promise ->
+            val catalog = ShazamKit.createShazamCatalog(ShazamDeveloperTokenProvider(), locale = Locale.getDefault())
+
+            when (val session = ShazamKit.createStreamingSession(catalog = catalog, AudioSampleRateInHz.SAMPLE_RATE_16000, DEFAULT_BUFFER_SIZE)) {
+                is ShazamKitResult.Success -> {
+                    if (ActivityCompat.checkSelfPermission(
+                            context,
+                            Manifest.permission.RECORD_AUDIO
+                        ) != PackageManager.PERMISSION_GRANTED
+                    ) {
+                        promise.resolve(null)
+                    } else {
+                        session.data.matchStream(simpleMicRecording(catalog), Int.SIZE_BYTES, 12000)
+                        session.data.recognitionResults().collect { result ->
+                           when(result) {
+                               is MatchResult.Match -> {
+                                   val results = result.matchedMediaItems.map {
+                                        MatchedItem(
+                                            title = it.title,
+                                            artist = it.artist,
+                                            shazamID = it.shazamID,
+                                            appleMusicID = it.appleMusicID,
+                                            appleMusicURL = it.appleMusicURL?.toString().orEmpty(),
+                                            artworkURL = it.artworkURL?.toString().orEmpty(),
+                                            genres = it.genres,
+                                            webURL = it.webURL?.toString().orEmpty(),
+                                            subtitle = it.subtitle,
+                                            videoURL = it.videoURL?.toString().orEmpty(),
+                                            explicitContent = it.explicitContent ?: false,
+                                            matchOffset = it.matchOffsetInMs?.toDouble() ?: 0.0
+                                        )
+                                   }
+                                   promise.resolve(results)
+                               }
+                               is MatchResult.NoMatch -> {
+                                    promise.reject(NoMatchException())
+                               }
+                               is MatchResult.Error -> {
+                                    promise.reject("MatchResult Error", result.exception.message, result.exception.cause)
+                               }
+                           }
+                        }
+                    }
+                }
+                is ShazamKitResult.Failure -> {
+                    promise.reject("Shazam Error", "Failed to start recording", session.reason)
+                }
+            }
         }
 
         Function("stopListening") {
@@ -40,7 +90,6 @@ class ShazamKitModule : Module() {
             .setEncoding(AudioFormat.ENCODING_PCM_16BIT)
             .setSampleRate(48_000)
             .build()
-
 
         val audioRecord = AudioRecord.Builder()
             .setAudioSource(audioSource)
@@ -60,9 +109,9 @@ class ShazamKitModule : Module() {
             AudioFormat.ENCODING_PCM_16BIT
         )
 
-
         audioRecord.startRecording()
         val readBuffer = ByteArray(bufferSize)
+
         while (destination.remaining() > 0) {
             val actualRead = audioRecord.read(readBuffer, 0, bufferSize)
             val byteArray = readBuffer.sliceArray(0 until actualRead)
