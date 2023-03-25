@@ -8,3 +8,7 @@ export async function startListening(): Promise<MatchedItem[]> {
 export function stopListening() {
   ExpoShazamKit.stopListening();
 }
+
+export async function addToShazamLibrary(): Promise<{ success: boolean }> {
+  return await ExpoShazamKit.addToShazamLibrary();
+}

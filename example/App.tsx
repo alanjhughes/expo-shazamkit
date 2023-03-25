@@ -5,6 +5,7 @@ import { MotiView } from "moti";
 import { useState } from "react";
 import {
   ActivityIndicator,
+  Alert,
   Button,
   Image,
   Pressable,
@@ -30,6 +31,14 @@ export default function App() {
       }
     } catch {
       setSearching(false);
+    }
+  };
+
+  const addToShazamLibrary = async () => {
+    const result = await ExpoShazamKit.addToShazamLibrary();
+
+    if (result.success) {
+      Alert.alert("Success", "Song added to Shazam Library");
     }
   };
 
@@ -70,13 +79,14 @@ export default function App() {
               <View style={{ flexDirection: "row" }}>
                 <Button
                   title="Apple Music"
-                  onPress={() => Linking.openURL(song.appleMusicURL)}
+                  onPress={() => Linking.openURL(song.appleMusicURL ?? "")}
                 />
                 <Button
                   title="Shazam"
                   onPress={() => Linking.openURL(song.webURL ?? "")}
                 />
               </View>
+              <Button title="Add to Library" onPress={addToShazamLibrary} />
             </View>
           </MotiView>
         )}
