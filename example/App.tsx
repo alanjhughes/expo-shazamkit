@@ -86,7 +86,10 @@ export default function App() {
                   onPress={() => Linking.openURL(song.webURL ?? "")}
                 />
               </View>
-              <Button title="Add to Library" onPress={addToShazamLibrary} />
+              <Button
+                title="Add to Shazam Library"
+                onPress={addToShazamLibrary}
+              />
             </View>
           </MotiView>
         )}

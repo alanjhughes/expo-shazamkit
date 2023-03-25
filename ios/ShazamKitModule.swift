@@ -38,6 +38,7 @@ public class ShazamKitModule: Module, ResultHandler {
 
     AsyncFunction("addToShazamLibrary") { (promise: Promise) in
       if latestResults.isEmpty {
+        promise.resolve(["success": false])
         return
       }
 
@@ -47,14 +48,12 @@ public class ShazamKitModule: Module, ResultHandler {
         }
 
         self?.latestResults.removeAll()
-
         promise.resolve(["success": true])
       }
     }
 
     Function("stopListening") {
       stopListening()
-      pendingPromise = nil
     }
   }
 
