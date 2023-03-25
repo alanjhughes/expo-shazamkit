@@ -1,6 +1,6 @@
 import * as Linking from "expo-linking";
 import * as ExpoShazamKit from "expo-shazamkit";
-import { MatchedItem } from "expo-shazamkit/ShazamKitModule.types";
+import { MatchedItem } from "expo-shazamkit";
 import { MotiView } from "moti";
 import { useState } from "react";
 import {
