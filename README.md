@@ -4,7 +4,7 @@ Shazam for React Native
 
 ## Preview
 
-<img src="screenshots/screen.png" alt="drawing" width="200"/>
+https://user-images.githubusercontent.com/30924086/229935589-ef3e60ae-10f0-4e0d-aebf-a0ce06d8dba2.mov
 
 # Installation
 
