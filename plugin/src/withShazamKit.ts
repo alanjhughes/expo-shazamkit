@@ -10,7 +10,9 @@ const withShazamKit: ConfigPlugin<{
   if (!config.ios) config.ios = {};
   if (!config.ios.infoPlist) config.ios.infoPlist = {};
   config.ios.infoPlist.NSMicrophoneUsageDescription =
-    config.ios.infoPlist.NSMicrophoneUsageDescription || MICROPHONE_USAGE;
+    microphonePermission ||
+    config.ios.infoPlist.NSMicrophoneUsageDescription ||
+    MICROPHONE_USAGE;
 
   return config;
 };

@@ -101,19 +101,22 @@ public class ShazamKitModule: Module, ResultHandler {
   private func findMatch() throws {
     guard !audioEngine.isRunning else { return }
     let audioSession = AVAudioSession.sharedInstance()
-
     try audioSession.setCategory(.playAndRecord)
+    
     audioSession.requestRecordPermission { [weak self] success in
       guard success, let self else { return }
-      try? self.audioEngine.start()
+      do {
+        try self.audioEngine.start()
+      } catch {
+        self.pendingPromise?.reject(FailedToStartAudioEngine())
+        self.pendingPromise = nil
+      }
     }
   }
 
   private func stopListening() {
-    if audioEngine.isRunning {
-      audioEngine.stop()
-      pendingPromise = nil
-    }
+    audioEngine.stop()
+    pendingPromise = nil
   }
 
   private func configureAudioEngine() {

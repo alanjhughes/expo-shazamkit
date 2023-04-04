@@ -11,3 +11,9 @@ internal class NoMatchException: Exception {
         "Could not find a match"
     }
 }
+
+internal class FailedToStartAudioEngine: Exception {
+  override var reason: String {
+    "Audio engine could not be started. Try again"
+  }
+}
