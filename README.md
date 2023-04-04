@@ -111,6 +111,7 @@ const startListening = async () => {
       </View>
     </View>
   )}
+  <Button title="Start listening" onPress={startListening} />
 </View>;
 ```
 
