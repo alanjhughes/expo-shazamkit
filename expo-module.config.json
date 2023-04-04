@@ -1,9 +1,6 @@
 {
-  "platforms": ["ios", "android"],
+  "platforms": ["ios"],
   "ios": {
     "modules": ["ShazamKitModule"]
-  },
-  "android": {
-    "modules": ["expo.community.modules.shazamkit.ShazamKitModule"]
   }
 }

@@ -57,46 +57,10 @@ public class ShazamKitModule: Module, ResultHandler {
       stopListening()
     }
   }
-
-  private func findMatch() throws {
-    guard !audioEngine.isRunning else { return }
-    let audioSession = AVAudioSession.sharedInstance()
-
-    try audioSession.setCategory(.playAndRecord)
-    audioSession.requestRecordPermission { [weak self] success in
-      guard success, let self else { return }
-      try? self.audioEngine.start()
-    }
-  }
-
-  private func stopListening() {
-    if audioEngine.isRunning {
-      audioEngine.stop()
-      pendingPromise = nil
-    }
-  }
-
-  private func configureAudioEngine() {
-    let inputFormat = audioEngine.inputNode.inputFormat(forBus: 0)
-    let outputFormat = AVAudioFormat(standardFormatWithSampleRate: 48000, channels: 1)
-
-    audioEngine.attach(mixerNode)
-
-    audioEngine.connect(audioEngine.inputNode, to: mixerNode, format: inputFormat)
-    audioEngine.connect(mixerNode, to: audioEngine.outputNode, format: outputFormat)
-
-    mixerNode.installTap(onBus: 0, bufferSize: 8192, format: outputFormat) { buffer, audioTime in
-      self.addAudio(buffer: buffer, audioTime: audioTime)
-    }
-  }
-
-  private func addAudio(buffer: AVAudioPCMBuffer, audioTime: AVAudioTime) {
-    session.matchStreamingBuffer(buffer, at: audioTime)
-  }
-
+  
   func didFind(match: SHMatch) {
     guard let promise = pendingPromise else {
-      log.error("lost promise")
+      log.error("Shazam module: promise has been lost")
       stopListening()
       return
     }
@@ -129,7 +93,44 @@ public class ShazamKitModule: Module, ResultHandler {
       log.error("lost promise")
       return
     }
+    
     promise.reject(NoMatchException())
     stopListening()
+  }
+
+  private func findMatch() throws {
+    guard !audioEngine.isRunning else { return }
+    let audioSession = AVAudioSession.sharedInstance()
+
+    try audioSession.setCategory(.playAndRecord)
+    audioSession.requestRecordPermission { [weak self] success in
+      guard success, let self else { return }
+      try? self.audioEngine.start()
+    }
+  }
+
+  private func stopListening() {
+    if audioEngine.isRunning {
+      audioEngine.stop()
+      pendingPromise = nil
+    }
+  }
+
+  private func configureAudioEngine() {
+    let inputFormat = audioEngine.inputNode.inputFormat(forBus: 0)
+    let outputFormat = AVAudioFormat(standardFormatWithSampleRate: inputFormat.sampleRate, channels: 1)
+
+    audioEngine.attach(mixerNode)
+
+    audioEngine.connect(audioEngine.inputNode, to: mixerNode, format: inputFormat)
+    audioEngine.connect(mixerNode, to: audioEngine.outputNode, format: outputFormat)
+
+    mixerNode.installTap(onBus: 0, bufferSize: 2048, format: outputFormat) { buffer, audioTime in
+      self.addAudio(buffer: buffer, audioTime: audioTime)
+    }
+  }
+
+  private func addAudio(buffer: AVAudioPCMBuffer, audioTime: AVAudioTime) {
+    session.matchStreamingBuffer(buffer, at: audioTime)
   }
 }
