@@ -117,12 +117,12 @@ const startListening = async () => {
 
 ### Available methods
 
-| Name                 | Description                                                                                            |
-| -------------------- | ------------------------------------------------------------------------------------------------------ |
-| `isAvailable`        | returns a boolean indicating if the library is available on the current platform                       |
-| `startListening`     | async. returns an array of matches. Usually only contains a single item                                |
-| `stopListening`      | stop the recording                                                                                     |
-| `addToShazamLibrary` | async. adds the most recently discovered item to the users Shazam library. Return `{success: boolean}` |
+| Name                 | Description                                                                                               |
+| -------------------- | --------------------------------------------------------------------------------------------------------- |
+| `isAvailable`        | Returns a boolean indicating if the library is available on the current platform                          |
+| `startListening`     | async. Returns an array of matches. Usually only contains a single item                                   |
+| `stopListening`      | Stop the recording                                                                                        |
+| `addToShazamLibrary` | async. Adds the most recently discovered item to the users Shazam library. returns `{ success: boolean }` |
 
 # Contributing
 
