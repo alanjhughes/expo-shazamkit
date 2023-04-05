@@ -1,4 +1,4 @@
-# expo-shazamkit
+# Expo Shazamkit
 
 Shazam for React Native
 
@@ -114,6 +114,15 @@ const startListening = async () => {
   <Button title="Start listening" onPress={startListening} />
 </View>;
 ```
+
+### Available methods
+
+| Name                 | Description                                                                                            |
+| -------------------- | ------------------------------------------------------------------------------------------------------ |
+| `isAvailable`        | returns a boolean indicating if the library is available on the current platform                       |
+| `startListening`     | async. returns an array of matches. Usually only contains a single item                                |
+| `stopListening`      | stop the recording                                                                                     |
+| `addToShazamLibrary` | async. adds the most recently discovered item to the users Shazam library. Return `{success: boolean}` |
 
 # Contributing
 
