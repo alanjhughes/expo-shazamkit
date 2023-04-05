@@ -21,7 +21,8 @@
     "expo",
     "ShazamKit",
     "shazam",
-    "music"
+    "music",
+    "ios"
   ],
   "repository": "https://github.com/alanjhughes/expo-shazamkit",
   "bugs": {
@@ -42,5 +43,8 @@
     "react": "*",
     "react-native": "*"
   },
-  "prettier": {}
+  "prettier": {
+    "arrowParens": "avoid",
+    "trailingComma": "all"
+  }
 }

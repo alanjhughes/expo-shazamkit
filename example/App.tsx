@@ -23,7 +23,6 @@ export default function App() {
       if (song) {
         setSong(null);
       }
-
       setSearching(true);
       const result = await ExpoShazamKit.startListening();
       if (result.length > 0) {
@@ -31,7 +30,6 @@ export default function App() {
       } else {
         Alert.alert("No Match", "No songs found");
       }
-
       setSearching(false);
     } catch (error: any) {
       if (error instanceof Error) {

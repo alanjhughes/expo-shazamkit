@@ -20,6 +20,10 @@ public class ShazamKitModule: Module, ResultHandler {
       session.delegate = delegate
       configureAudioEngine()
     }
+    
+    Function("isAvailable") {
+      return true
+    }
 
     AsyncFunction("startListening") { (promise: Promise) in
       if pendingPromise != nil {
