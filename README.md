@@ -27,6 +27,8 @@ Add the following to your `Info.plist`:
 <string>$(PRODUCT_NAME) would like to access your microphone</string>
 ```
 
+ShazmamKit is only available on iOS 15.0 and above. You'll need to set your deployment target to iOS 15.0 or above.
+
 ## Activate the ShazamKit service
 
 On your apple developer account page, under `Certificates, Identifiers & Profiles` select `Identifiers`. If you have already created an identifier for your app, select it. If not, create a new one. Under `App Services` enable `ShazamKit`.
@@ -35,15 +37,27 @@ On your apple developer account page, under `Certificates, Identifiers & Profile
 
 You need to request access to the microphone to record audio. You can use the plugin to set the message you would like or use the default `Allow $(PRODUCT_NAME) to access your microphone`.
 
+Also, you will need to set the deployment target to iOS 15.0 or above. You can do this by installing `expo-build-properties`
+
 `app.json`
 
 ```json
 {
   "plugins": [
-    "expo-shazamkit",
-    {
-      "microphonePermission": "Your permission message"
-    }
+    [
+      "expo-shazamkit",
+      {
+        "microphonePermission": "Your permission message"
+      }
+    ],
+    [
+      "expo-build-properties",
+      {
+        "ios": {
+          "deploymentTarget": "15.0"
+        }
+      }
+    ]
   ]
 }
 ```
