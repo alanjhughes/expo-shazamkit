@@ -5,13 +5,9 @@ export default NativeModulesProxy.ExpoShazamKit || {
     return false;
   },
 
-  startListening() {
-    throw new Error("ExpoShazamKit is not available on Android.");
-  },
+  startListening() {},
 
-  stopListening() {
-    throw new Error("ExpoShazamKit is not available on Android.");
-  },
+  stopListening() {},
 
   addToShazamLibrary() {
     return { success: false };

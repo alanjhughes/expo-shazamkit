@@ -94,7 +94,7 @@ public class ShazamKitModule: Module, ResultHandler {
 
   func didNotFind(match: SHSignature) {
     guard let promise = pendingPromise else {
-      log.error("lost promise")
+      log.error("ExpoShazamKit: promise has been lost")
       return
     }
     
