@@ -1,4 +1,5 @@
 const path = require("path");
+/* global __dirname */
 module.exports = function (api) {
   api.cache(true);
   return {

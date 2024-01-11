@@ -52,8 +52,8 @@ export default function App() {
       <View style={{ flex: 1, justifyContent: "center", gap: 10 }}>
         {song && (
           <MotiView
-            from={{ opacity: 0, scale: 0 }}
-            animate={{ opacity: 1, scale: 1 }}
+            from={{ opacity: 0, scale: 0, rotate: "0deg" }}
+            animate={{ opacity: 1, scale: 0.9, rotate: "720deg" }}
             transition={{
               type: "timing",
               duration: 500,
@@ -100,14 +100,7 @@ export default function App() {
         )}
       </View>
 
-      {searching && (
-        <View style={{ alignItems: "center", marginVertical: 20, gap: 10 }}>
-          <ActivityIndicator color="white" size="large" />
-          <Text style={{ color: "white", fontWeight: "bold" }}>
-            Listening...
-          </Text>
-        </View>
-      )}
+      <Listening searching={searching} />
 
       <View style={{ gap: 20 }}>
         <Pressable
@@ -176,6 +169,19 @@ export default function App() {
           )}
         </Pressable>
       </View>
+    </View>
+  );
+}
+
+function Listening({ searching }: { searching: boolean }) {
+  if (!searching) {
+    return null;
+  }
+
+  return (
+    <View style={{ alignItems: "center", marginVertical: 20, gap: 10 }}>
+      <ActivityIndicator color="white" size="large" />
+      <Text style={{ color: "white", fontWeight: "bold" }}>Listening...</Text>
     </View>
   );
 }

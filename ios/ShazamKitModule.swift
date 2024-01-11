@@ -4,17 +4,17 @@ import ShazamKit
 public class ShazamKitModule: Module, ResultHandler {
   private let session = SHSession()
   private var delegate: ShazamDelegate?
-
+  
   private let audioEngine = AVAudioEngine()
   private let mixerNode = AVAudioMixerNode()
   
   private var pendingPromise: Promise?
-
+  
   private var latestResults = [SHMediaItem]()
-
+  
   public func definition() -> ModuleDefinition {
     Name("ExpoShazamKit")
-
+    
     OnCreate {
       delegate = ShazamDelegate(resultHandler: self)
       session.delegate = delegate
@@ -24,15 +24,15 @@ public class ShazamKitModule: Module, ResultHandler {
     Function("isAvailable") {
       return true
     }
-
+    
     AsyncFunction("startListening") { (promise: Promise) in
       if pendingPromise != nil {
         promise.reject(SearchInProgressException())
         return
       }
-
+      
       pendingPromise = promise
-
+      
       do {
         try findMatch()
       } catch {
@@ -40,23 +40,23 @@ public class ShazamKitModule: Module, ResultHandler {
         pendingPromise = nil
       }
     }
-
+    
     AsyncFunction("addToShazamLibrary") { (promise: Promise) in
       if latestResults.isEmpty {
         promise.resolve(["success": false])
         return
       }
-
+      
       SHMediaLibrary.default.add(latestResults) { [weak self] error in
         if error != nil {
           promise.resolve(["success": false])
         }
-
+        
         self?.latestResults.removeAll()
         promise.resolve(["success": true])
       }
     }
-
+    
     Function("stopListening") {
       stopListening()
     }
@@ -70,7 +70,7 @@ public class ShazamKitModule: Module, ResultHandler {
     }
     
     stopListening()
-
+    
     let items = match.mediaItems.map { item in
       MatchedItem(
         title: item.title,
@@ -87,11 +87,11 @@ public class ShazamKitModule: Module, ResultHandler {
         matchOffset: Double(item.matchOffset.description) ?? 0.0
       )
     }
-
+    
     latestResults = match.mediaItems
     promise.resolve(items)
   }
-
+  
   func didNotFind(match: SHSignature) {
     guard let promise = pendingPromise else {
       log.error("ExpoShazamKit: promise has been lost")
@@ -101,7 +101,7 @@ public class ShazamKitModule: Module, ResultHandler {
     promise.reject(NoMatchException())
     stopListening()
   }
-
+  
   private func findMatch() throws {
     guard !audioEngine.isRunning else { return }
     let audioSession = AVAudioSession.sharedInstance()
@@ -117,26 +117,26 @@ public class ShazamKitModule: Module, ResultHandler {
       }
     }
   }
-
+  
   private func stopListening() {
     audioEngine.stop()
     pendingPromise = nil
   }
-
+  
   private func configureAudioEngine() {
     let inputFormat = audioEngine.inputNode.inputFormat(forBus: 0)
     let outputFormat = AVAudioFormat(standardFormatWithSampleRate: inputFormat.sampleRate, channels: 1)
-
+    
     audioEngine.attach(mixerNode)
-
+    
     audioEngine.connect(audioEngine.inputNode, to: mixerNode, format: inputFormat)
     audioEngine.connect(mixerNode, to: audioEngine.outputNode, format: outputFormat)
-
+    
     mixerNode.installTap(onBus: 0, bufferSize: 2048, format: outputFormat) { buffer, audioTime in
       self.addAudio(buffer: buffer, audioTime: audioTime)
     }
   }
-
+  
   private func addAudio(buffer: AVAudioPCMBuffer, audioTime: AVAudioTime) {
     session.matchStreamingBuffer(buffer, at: audioTime)
   }

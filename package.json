@@ -1,6 +1,6 @@
 {
   "name": "expo-shazamkit",
-  "version": "0.1.2",
+  "version": "1.0.0",
   "description": "ShazamKit for React Native",
   "main": "build/index.js",
   "types": "build/index.d.ts",
@@ -33,10 +33,9 @@
   "homepage": "https://github.com/alanjhughes/expo-shazamkit#readme",
   "dependencies": {},
   "devDependencies": {
-    "@types/react": "^18.0.25",
-    "@types/react-native": "^0.70.6",
-    "expo-module-scripts": "^3.0.4",
-    "expo-modules-core": "^1.1.0"
+    "@types/react": "~18.2.14",
+    "expo-module-scripts": "^3.1.0",
+    "expo-modules-core": "^1.5.11"
   },
   "peerDependencies": {
     "expo": "*",

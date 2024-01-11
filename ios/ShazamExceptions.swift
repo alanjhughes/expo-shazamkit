@@ -7,9 +7,9 @@ internal class SearchInProgressException: Exception {
 }
 
 internal class NoMatchException: Exception {
-    override var reason: String {
-        "Could not find a match"
-    }
+  override var reason: String {
+    "Could not find a match"
+  }
 }
 
 internal class FailedToStartAudioEngine: Exception {

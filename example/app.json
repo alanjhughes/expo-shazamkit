@@ -14,7 +14,10 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "expo.community.modules.shazamkit.example"
+      "bundleIdentifier": "expo.community.modules.shazamkit.example",
+      "infoPlist": {
+        "NSMicrophoneUsageDescription": "$(PRODUCT_NAME) needs access to the microphone to identify songs."
+      }
     },
     "android": {
       "adaptiveIcon": {
